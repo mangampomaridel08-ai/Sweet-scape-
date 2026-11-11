@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweet Escape - Delicious Baked Goods</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+/* Custom Font for a sweeter look */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;600;800&display=swap');
+.brand-font {
+font-family: 'Pacifico', cursive;
+line-height: 1;
+}
+.inter-font {
+font-family: 'Inter', sans-serif;
+}
+/* Utility classes for product cards and buttons */
+.product-card {
+@apply bg-pink-50 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer border border-pink-100;
+}
+/* New: Enhanced Category Button Style */
+.fancy-category-button {
+/* Styling for the large category buttons */
+@apply flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl text-white shadow-2xl transition duration-300 transform hover:scale-[1.03] active:scale-[0.98] min-h-[150px] cursor-pointer;
+background-image: linear-gradient(135deg, var(--tw-category-start, #fbcfe8), var(--tw-category-end, #f472b6));
+border: 3px solid white;
+}
+/* Style for the back/close button in detail views */
+.back-button-style {
+@apply text-gray-500 hover:text-primary-pink transition duration-150 p-2 rounded-full;
+}
+/* Additional style for the cart view */
+.cart-summary-box {
+@apply bg-white p-6 rounded-xl shadow-xl border border-gray-100;
+}
+
+/* Custom Modal Styles */
+.modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300;
+}
+.modal-content {
+    @apply bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full transform transition-transform duration-300 scale-100;
+}
+</style>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+'light-pink': '#f8afc2',
+'primary-pink': '#ec4899',
+'dark-pink': '#9d174d',
+},
+fontFamily: {
+'sans': ['Inter', 'sans-serif'],
+}
+}
+}
+}
+</script>
+</head>
+<body class="inter-font bg-pink-50 min-h-screen flex flex-col">
+<header class="bg-white/90 sticky top-0 z-20 shadow-lg backdrop-blur-sm">
+<div class="max-w-6xl mx-auto p-4 flex justify-end items-center">
+<div class="flex items-center space-x-4">
+<nav class="space-x-2 md:space-x-4">
+<button data-target="about" class="view-toggle text-gray-700 hover:text-primary-pink font-semibold transition duration-300 p-2 rounded-lg text-sm md:text-base">
+About Us
+</button>
+<button data-target="contact" class="view-toggle text-gray-700 hover:text-primary-pink font-semibold transition duration-300 p-2 rounded-lg text-sm md:text-base">
+Contact Us
+</button>
+<button data-target="branches" class="view-toggle text-gray-700 hover:text-primary-pink font-semibold transition duration-300 p-2 rounded-lg text-sm md:text-base">
+Branches
+</button>
+</nav>
+<button data-target="cart" class="view-toggle relative p-2 text-gray-700 hover:text-primary-pink transition duration-300">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+<span id="cart-counter" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">0</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center p-4">
+<section id="homeView" class="w-full max-w-6xl flex flex-col items-center justify-center min-h-[70vh] text-center">
+<h1 id="homeLink" class="brand-font text-6xl md:text-8xl text-light-pink mb-4 hover:text-pink-500 transition duration-300 cursor-pointer">
+Sweet Escape
+</h1>
+<h2 class="text-5xl md:text-7xl brand-font text-light-pink mb-6">
+Your Moment of Sweetness
+</h2>
+<p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto">
+Indulge in our freshly baked cakes, cookies, and pastries, crafted with love.
+</p>
+<button data-target="selection" class="view-toggle bg-primary-pink text-white font-bold py-3 px-8 rounded-full shadow-xl hover:bg-pink-600 transition duration-300 transform hover:scale-105 active:scale-95 text-lg uppercase tracking-wider">
+Order Now
+</button>
+</section>
+<section id="selectionView" class="hidden w-full max-w-6xl py-8">
+<h2 class="text-4xl font-extrabold text-primary-pink mb-10 border-b-4 border-pink-200 pb-2 text-center">
+Select Your Indulgence
+</h2>
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-6">
+<button data-category="brownies" class="category-toggle fancy-category-button" style="--tw-category-start: #fccbea; --tw-category-end: #f472b6;">
+<span class="text-5xl mb-2">🍫</span> 
+<span class="text-2xl font-extrabold">Fudgy Brownies</span>
+<span class="text-sm font-medium opacity-80">Dense chocolate squares</span>
+</button>
+<button data-category="pies" class="category-toggle fancy-category-button" style="--tw-category-start: #fef08a; --tw-category-end: #fcd34d; color: #78350f;">
+<span class="text-5xl mb-2">🥧</span>
+<span class="text-2xl font-extrabold">Classic Pies</span>
+<span class="text-sm font-medium opacity-80">Crusts of flaky perfection</span>
+</button>
+<button data-category="pudding" class="category-toggle fancy-category-button" style="--tw-category-start: #bfdbfe; --tw-category-end: #60a5fa;">
+<span class="text-5xl mb-2">🍮</span>
+<span class="text-2xl font-extrabold">Creamy Pudding</span>
+<span class="text-sm font-medium opacity-80">Smooth, comforting cups</span>
+</button>
+<button data-category="moose" class="category-toggle fancy-category-button" style="--tw-category-start: #a7f3d0; --tw-category-end: #34d399; color: #064e3b;">
+<span class="text-5xl mb-2">🍧</span>
+<span class="text-2xl font-extrabold">Airy Mousse</span>
+<span class="text-sm font-medium opacity-80">Light & decadent</span>
+</button>
+<button data-category="cookies" class="category-toggle fancy-category-button" style="--tw-category-start: #f8afc2; --tw-category-end: #ec4899;">
+<span class="text-5xl mb-2">🍪</span>
+<span class="text-2xl font-extrabold">Gourmet Cookies</span>
+<span class="text-sm font-medium opacity-80">Crunchy, chewy goodness</span>
+</button>
+</div>
+<div class="mt-12 text-center">
+<button data-target="home" class="view-toggle text-primary-pink hover:text-pink-700 font-semibold p-2 rounded-lg transition duration-300">
+← Back to Home Page
+</button>
+</div>
+</section>
+<section id="cartView" class="hidden w-full max-w-6xl py-8">
+<h2 class="text-4xl font-extrabold text-primary-pink mb-8 border-b-4 border-pink-200 pb-2 text-center">
+🛒 My Delivery Order
+</h2>
+<div class="lg:flex lg:space-x-8">
+<div class="lg:w-3/5 space-y-4">
+<div id="cart-items-list" class="bg-white p-6 rounded-2xl shadow-xl space-y-4">
+<p class="text-center text-gray-500" id="empty-cart-message">Your cart is empty. Add some sweetness!</p>
+</div>
+<div class="mt-6 text-center">
+<button data-target="selection" class="view-toggle text-primary-pink hover:text-pink-700 font-semibold p-2 rounded-lg transition duration-300">
+← Continue Shopping
+</button>
+</div>
+</div>
+<div class="lg:w-2/5 mt-8 lg:mt-0">
+<div class="cart-summary-box">
+<h3 class="text-2xl font-bold text-dark-pink mb-4 border-b pb-2">Order Summary</h3>
+<div class="space-y-2 text-gray-700">
+<div class="flex justify-between">
+<span>Subtotal:</span>
+<span id="cart-subtotal" class="font-medium">₱0.00</span>
+</div>
+<div class="flex justify-between">
+<span>Delivery Fee:</span>
+<span id="delivery-fee" class="font-medium text-green-600">₱80.00</span>
+</div>
+<div class="flex justify-between font-extrabold text-xl pt-4 border-t border-dashed">
+<span>Total Amount Due:</span>
+<span id="cart-total" class="text-primary-pink">₱80.00</span>
+</div>
+</div>
+<button class="w-full bg-dark-pink text-white font-bold py-3 mt-6 rounded-lg shadow-lg hover:bg-pink-900 transition duration-300 disabled:opacity-50" id="checkout-btn" disabled>
+Proceed to Checkout (₱80.00)
+</button>
+<p class="text-xs text-center text-gray-500 mt-2">Delivery estimated in 45-60 minutes.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="aboutView" class="hidden w-full max-w-4xl py-8 bg-white p-8 rounded-2xl shadow-xl">
+
+    <h3 class="text-3xl font-bold text-pink-600 mb-6 border-b-2 pb-2">History of Sweet Escape</h3>
+
+    <div class="mb-8">
+        <p class="text-gray-700 mb-4">
+The story of Sweet Escape began in 2020, born from a simple idea to bring comfort, joy, and creativity into every dessert. In a world where people are always busy and stressed, Sweet Escape was created to be a moment of happiness a place and a flavor that lets you pause, relax, and enjoy life’s sweetest moments.
+
+It started as a small passion project, inspired by the love for homemade desserts and the desire to share that feeling of warmth with others. During a time when many people felt unsure and overwhelmed, Sweet Escape became a little source of hope. Every dessert was made with care, aiming to remind people that even on hard days, there is still something good to look forward to.
+
+As the months passed, Sweet Escape slowly grew. Friends, families, and even strangers began to notice the unique taste and the comforting style of each dessert. What once began as simple recipes made in a small kitchen turned into something bigger an opportunity to spread happiness through food.
+
+Sweet Escape did not only focus on flavor it also focused on creating memories. Each cup, slice, and bite was meant to make customers feel special, like they were treating themselves to something they truly deserve. This is what made Sweet Escape different it was not just a business, but a story built on love, passion, and the belief that desserts can make people smile.
+
+
+    </div>
+
+    <div class="mb-8 p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink">
+        <h4 class="text-xl font-bold text-dark-pink mb-2">The Inspiration Behind Sweet Escape</h4>
+        <p class="text-gray-700">
+            Sweet Escape was inspired by the feeling of taking a break from the ordinary. The founders wanted to create desserts that not only taste good but also tell a story a story of warmth, nostalgia, and the sweetness of everyday life. Just like its name, Sweet Escape represents a tiny getaway in every bite whether it’s after a long day, a celebration, or just a quiet afternoon treat.
+        </p>
+    </div>
+
+    <div class="mb-8">
+        <h4 class="text-xl font-bold text-dark-pink mb-2">The Beginning of the Journey</h4>
+        <img class="w-full max-w-lg mx-auto rounded-lg shadow-xl mb-4" src="https://uploads.onecompiler.io/442nn3yzd/44536ap9q/1000071337.jpg" alt="A small, charming dessert stall with cookies and brownies.">
+        <p class="text-xs text-center text-gray-500 italic mb-4">The very first Sweet Escape stall (2020)</p>
+        <p class="text-gray-700 mb-2">
+            Sweet Escape started as a small dessert stall offering treats like cookies, brownies, made from fresh, locally sourced ingredients. 
+        </p>
+    </div>
+
+    <div class="mb-8 p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink">
+        <h4 class="text-xl font-bold text-dark-pink mb-2">Growth and Community Love</h4>
+        <p class="text-gray-700 mb-4">
+            By 2024, Sweet Escape opened a charming spot where friends, couples, and families could enjoy beautifully crafted sweets. The shop became known for its inviting atmosphere soft pastel interiors, the aroma of freshly baked pastries.
+        </p>
+        <blockquote class="text-center italic font-semibold text-primary-pink border-t pt-2 mt-4">
+            “Life can be hectic — but there’s always time for something sweet.”
+        </blockquote>
+    </div>
+
+    <div class="mb-8">
+        <h4 class="text-xl font-bold text-dark-pink mb-2">Sweet Escape Today</h4>
+        <p class="text-gray-700">
+            Today, Sweet Escape continues to grow and reach more customers who love affordable and satisfying desserts. The shop now offers a wider variety of sweets, including creamy pudding, soft mousse, and freshly baked pies. Every season, Sweet Escape creates new special treats inspired by both Filipino favorites and international flavors, making sure there is always something new for everyone to enjoy.
+Aside from improving its menu, Sweet Escape also focuses on giving customers a warm and welcoming experience. Whether it’s for a small celebration, a family bonding moment, or just a quick snack after a long day, Sweet Escape wants every visitor to feel relaxed and happy. The team behind Sweet Escape works hard to keep the quality high, using fresh ingredients and making each dessert with care.
+Because of its continued commitment to good taste and great service, more people are discovering Sweet Escape and sharing it with others. From simple cravings to special occasions, Sweet Escape remains dedicated to spreading happiness one dessert at a time—making every bite feel like a sweet break from the busy world.</p>
+        <p class="text-lg font-bold mt-4 text-center text-primary-pink">
+            It’s more than just a brand. It’s your moment of sweetness, your little escape from the ordinary.
+        </p>
+    </div>
+
+    <button data-target="home" class="view-toggle mt-10 text-primary-pink hover:text-pink-700 font-semibold p-2 rounded-lg transition duration-300">
+    ← Back to Home Page
+    </button>
+
+</section>
+<section id="contactView" class="hidden w-full max-w-4xl py-8 bg-white p-8 rounded-2xl shadow-xl">
+<h3 class="text-3xl font-bold text-pink-600 mb-8">Connect With Sweet Escape</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <div class="md:col-span-2">
+        <h4 class="text-xl font-bold text-dark-pink mb-4 border-b pb-2">Follow Our Sweet Adventures</h4>
+        <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+            
+            <a href="https://facebook.com/sweetescapebakeryph" target="_blank" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition duration-300 p-3 bg-pink-50 rounded-lg shadow-md hover:shadow-lg">
+                <i class="fab fa-facebook-f w-4 h-4"></i>
+                <span class="font-medium">Facebook</span>
+            </a>
+            <a href="https://instagram.com/sweetescape" target="_blank" class="flex items-center space-x-2 text-gray-700 hover:text-pink-500 transition duration-300 p-3 bg-pink-50 rounded-lg shadow-md hover:shadow-lg">
+                <i class="fab fa-instagram w-4 h-4"></i>
+                <span class="font-medium">Instagram</span>
+            </a>
+            <a href="https://tiktok.com/@sweetescapeofficial" target="_blank" class="flex items-center space-x-2 text-gray-700 hover:text-black transition duration-300 p-3 bg-pink-50 rounded-lg shadow-md hover:shadow-lg">
+                <i class="fab fa-tiktok w-4 h-4"></i>
+                <span class="font-medium">TikTok</span>
+            </a>
+            <a href="https://twitter.com/sweetescape" target="_blank" class="flex items-center space-x-2 text-gray-700 hover:text-blue-400 transition duration-300 p-3 bg-pink-50 rounded-lg shadow-md hover:shadow-lg">
+                <i class="fab fa-twitter w-4 h-4"></i>
+                <span class="font-medium">Twitter / X</span>
+            </a>
+            <a href="https://youtube.com/@sweetescape" target="_blank" class="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition duration-300 p-3 bg-pink-50 rounded-lg shadow-md hover:shadow-lg">
+                <i class="fab fa-youtube w-4 h-4"></i>
+                <span class="font-medium">YouTube</span>
+            </a>
+        </div>
+    </div>
+    <div class="space-y-6 md:col-span-1">
+        <div>
+            <h4 class="text-xl font-bold text-dark-pink mb-2 border-b pb-2">Main Mobile Line</h4>
+            <a href="tel:+639171234567" class="text-lg text-primary-pink font-extrabold hover:underline">+63 917 123 4567</a>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-dark-pink mb-2 border-b pb-2">Main Office Address</h4>
+            <p class="text-gray-700 font-medium">
+                Unit 101, The Podium Towers,<br>
+                Ayala Avenue, Makati City, 1226
+            </p>
+        </div>
+    </div>
+</div>
+<button data-target="home" class="view-toggle mt-10 text-primary-pink hover:text-pink-700 font-semibold p-2 rounded-lg transition duration-300">
+← Back to Home Page
+</button>
+</section>
+<section id="branchesView" class="hidden w-full max-w-4xl py-8 bg-white p-8 rounded-2xl shadow-xl">
+<h3 class="text-3xl font-bold text-pink-600 mb-6">Our 5 Locations</h3>
+<p class="text-gray-700 mb-4">Visit any of our physical branches to experience the Sweet Escape difference in person! (Operating hours: 10:00 AM - 8:00 PM Daily)</p>
+<div class="space-y-6">
+<div class="p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink shadow-md">
+<h4 class="text-xl font-bold text-dark-pink">1. Makati Flagship Store</h4>
+<img class="w-full h-32 object-cover rounded-md mt-2 mb-2" src="https://uploads.onecompiler.io/442nn3yzd/445jdq3j9/1000072727.jpg" alt="Photo of Makati Flagship Store">
+<p class="text-gray-700">Unit 101, The Podium Towers, Ayala Avenue, Makati City, 1226</p>
+</div>
+<div class="p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink shadow-md">
+<h4 class="text-xl font-bold text-dark-pink">2. Quezon City Branch</h4>
+<img class="w-full h-32 object-cover rounded-md mt-2 mb-2" src="https://uploads.onecompiler.io/442nn3yzd/445jdq3j9/1000072587.jpg" alt="Photo of Quezon City Branch">
+<p class="text-gray-700">G/F, Trinoma Mall, North Avenue, Bagong Pag-asa, Quezon City, 1105</p>
+</div>
+<div class="p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink shadow-md">
+<h4 class="text-xl font-bold text-dark-pink">3. Alabang Town Center Kiosk</h4>
+<img class="w-full h-32 object-cover rounded-md mt-2 mb-2" src="https://uploads.onecompiler.io/442nn3yzd/445jdq3j9/1000072594.jpg" alt="Photo of Alabang Town Center Kiosk">
+<p class="text-gray-700">Level 2, near the Cinema, Alabang-Zapote Road, Muntinlupa City, 1770</p>
+</div>
+<div class="p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink shadow-md">
+<h4 class="text-xl font-bold text-dark-pink">4. BGC High Street Cafe</h4>
+<img class="w-full h-32 object-cover rounded-md mt-2 mb-2" src="https://uploads.onecompiler.io/442nn3yzd/445gctyzv/1000072596.jpg" alt="Photo of BGC High Street Cafe">
+<p class="text-gray-700">9th Avenue, Bonifacio High Street, Taguig City, 1634</p>
+</div>
+<div class="p-4 bg-pink-50 rounded-lg border-l-4 border-primary-pink shadow-md">
+<h4 class="text-xl font-bold text-dark-pink">5. Pasig City Takeout Hub</h4>
+<img class="w-full h-32 object-cover rounded-md mt-2 mb-2" src="https://uploads.onecompiler.io/442nn3yzd/445jdq3j9/1000072595.jpg" alt="Photo of Pasig City Takeout Hub">
+<p class="text-gray-700">Ground Floor, Megamall A, EDSA corner Doña Julia Vargas Ave., Mandaluyong City, 1555</p>
+</div>
+</div>
+<button data-target="home" class="view-toggle mt-6 text-primary-pink hover:text-pink-700 font-semibold p-2 rounded-lg transition duration-300">
+← Back to Home Page
+</button>
+</section>
+<div id="detailViewsContainer" class="w-full max-w-6xl py-8 space-y-12">
+<section id="browniesView" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+<h3 class="text-3xl font-bold text-pink-600">Fudgy Brownies & Bars</h3>
+<button data-target="selection" class="view-toggle back-button-style" aria-label="Close menu">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="product-card" data-product-id="brownie_classic_gooey">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/445tg5t5c/1000066401.jpg" alt="Classic Gooey Brownie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Classic Gooey Brownie</p>
+<p class="text-xs text-gray-500 mb-1">₱190.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_rockyroad">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/445tg5t5c/1000066399.jpg" alt="Fudgy Rocky Road Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Fudgy Rocky Road Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱230.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_classic">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000070629.jpg" alt="Classic Fudgy Brownie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Classic Fudgy Brownie</p>
+<p class="text-xs text-gray-500 mb-1">₱180.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_walnut">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000070632.jpg" alt="Walnut & Sea Salt Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Walnut & Sea Salt Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱210.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_raspberry">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000070630.jpg" alt="Raspberry Cheesecake Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Raspberry Cheesecake Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱240.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_peanut">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000070633.jpg" alt="Peanut Butter & Fudge Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Peanut Butter & Fudge Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱220.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_mint">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000067777.jpg" alt="Mint Chocolate Brownie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Mint Chocolate Brownie</p>
+<p class="text-xs text-gray-500 mb-1">₱225.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_caramel">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000067780.jpg" alt="Salted Caramel Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Salted Caramel Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱240.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_coconut">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000067781.jpg" alt="Coconut Dream Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Coconut Dream Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱195.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="brownie_smores">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444wcwr2j/1000067779.png" alt="Gourmet S'mores Bar">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Gourmet S'mores Bar</p>
+<p class="text-xs text-gray-500 mb-1">₱250.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center"><button data-target="selection" class="view-toggle bg-pink-100 text-primary-pink font-bold py-3 px-12 rounded-full shadow-lg hover:bg-pink-200 transition duration-300 text-xl uppercase tracking-wider"> ← Back to Categories</button></div>
+</section>
+<section id="piesView" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+<h3 class="text-3xl font-bold text-pink-600">Classic & Specialty Pies</h3>
+<button data-target="selection" class="view-toggle back-button-style" aria-label="Close menu">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="product-card" data-product-id="pie_apple">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070647.jpg" alt="Homestyle Apple Crumble Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Apple Crumble Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1100.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_pecan">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070648.jpg" alt="Bourbon Pecan Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Bourbon Pecan Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1200.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_lemon">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070646.jpg" alt="Lemon Meringue Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Lemon Meringue Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1050.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_chocolate">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070645.jpg" alt="French Chocolate Silk Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Chocolate Silk Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1175.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_blueberry">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070644.jpg" alt="Fresh Blueberry Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Fresh Blueberry Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1075.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_raspberry">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070643.jpg" alt="Tart Raspberry Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Tart Raspberry Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1100.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_cherry">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070642.jpg" alt="Classic Cherry Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Classic Cherry Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1050.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_keylime">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070641.jpg" alt="Zesty Key Lime Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Zesty Key Lime Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1150.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_pumpkin">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070640.jpg" alt="Spiced Pumpkin Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Spiced Pumpkin Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1000.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pie_rhubarb">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070639.jpg" alt="Strawberry Rhubarb Pie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Strawberry Rhubarb Pie (Full)</p>
+<p class="text-xs text-gray-500 mb-1">₱1225.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center"><button data-target="selection" class="view-toggle bg-pink-100 text-primary-pink font-bold py-3 px-12 rounded-full shadow-lg hover:bg-pink-200 transition duration-300 text-xl uppercase tracking-wider"> ← Back to Categories</button></div>
+</section>
+<section id="puddingView" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+<h3 class="text-3xl font-bold text-pink-600">Creamy Puddings & Custards</h3>
+<button data-target="selection" class="view-toggle back-button-style" aria-label="Close menu">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="product-card" data-product-id="pudding_chocolate">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000070661.jpg" alt="Dark Chocolate Pudding with Sauce">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Dark Chocolate Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱250.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_brulee">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000070651.jpg" alt="Creme Brulee">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Vanilla Crème brûlée</p>
+<p class="text-xs text-gray-500 mb-1">₱325.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_tiramisu">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000070659.jpg" alt="Tiramisu Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Tiramisu Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱275.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_caramel">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000070658.jpg" alt="Caramel Custard">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Caramel Custard</p>
+<p class="text-xs text-gray-500 mb-1">₱250.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_rice">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000070652.jpg" alt="Cinnamon Rice Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Cinnamon Rice Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱225.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_banana">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000067756.jpg" alt="Classic Banana Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Classic Banana Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱275.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_butterscotch">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000067757.jpg" alt="Butterscotch Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Butterscotch Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱240.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_tapioca">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000067758.jpg" alt="Creamy Tapioca Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Creamy Tapioca Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱225.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_coconut">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000067759.jpg" alt="Coconut Milk Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Coconut Milk Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱260.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="pudding_bread">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444whdnne/1000070650.jpg" alt="Whiskey Bread Pudding">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Whiskey Bread Pudding</p>
+<p class="text-xs text-gray-500 mb-1">₱300.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center"><button data-target="selection" class="view-toggle bg-pink-100 text-primary-pink font-bold py-3 px-12 rounded-full shadow-lg hover:bg-pink-200 transition duration-300 text-xl uppercase tracking-wider"> ← Back to Categories</button></div>
+</section>
+<section id="mooseView" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+<h3 class="text-3xl font-bold text-pink-600">Airy Mousses & Parfaits</h3>
+<button data-target="selection" class="view-toggle back-button-style" aria-label="Close menu">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="product-card" data-product-id="mousse_darkchoc">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071140.jpg" alt="Dark Chocolate Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Dark Chocolate Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱300.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_strawberry">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071136.jpg" alt="Strawberry Swirl Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Strawberry Swirl Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱275.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_mango">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071135.jpg" alt="Tropical Mango Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Tropical Mango Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱290.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_espresso">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071133.jpg" alt="Espresso Coffee Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Espresso Coffee Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱300.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_lemon">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071131.jpg" alt="Zesty Lemon Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Zesty Lemon Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱275.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_raspberry">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071130.jpg" alt="Raspberry Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Raspberry Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱290.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_vanilla">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071123.jpg" alt="Classic Vanilla Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Classic Vanilla Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱260.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_pistachio">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071121.jpg" alt="Pistachio Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Pistachio Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱310.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_whitechoc">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071120.jpg" alt="White Chocolate Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">White Chocolate Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱300.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="mousse_passion">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071119.jpg" alt="Passion Fruit Mousse">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Passion Fruit Mousse</p>
+<p class="text-xs text-gray-500 mb-1">₱290.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center"><button data-target="selection" class="view-toggle bg-pink-100 text-primary-pink font-bold py-3 px-12 rounded-full shadow-lg hover:bg-pink-200 transition duration-300 text-xl uppercase tracking-wider"> ← Back to Categories</button></div>
+</section>
+<section id="cookiesView" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+<h3 class="text-3xl font-bold text-pink-600">Gourmet Cookies & Biscuits</h3>
+<button data-target="selection" class="view-toggle back-button-style" aria-label="Close menu">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="product-card" data-product-id="cookie_chocchip">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000067740.jpg" alt="Chocolate Chip Cookie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Classic Chocolate Chip</p>
+<p class="text-xs text-gray-500 mb-1">₱125.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_oatmeal">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000067738.jpg" alt="Oatmeal Raisin Cookie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Chewy Oatmeal Raisin</p>
+<p class="text-xs text-gray-500 mb-1">₱140.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_sugar">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000067736.jpg" alt="Sugar Cookie">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Frosted Sugar Cookie</p>
+<p class="text-xs text-gray-500 mb-1">₱150.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_peanut">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000067737.jpg" alt="Peanut Butter Delight">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Peanut Butter Delight</p>
+<p class="text-xs text-gray-500 mb-1">₱140.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_macaron">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071141.jpg" alt="French Macaron (Single)">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">French Macaron (Single)</p>
+<p class="text-xs text-gray-500 mb-1">₱175.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_snicker">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071145.jpg" alt="Cinnamon Snickerdoodle">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Cinnamon Snickerdoodle</p>
+<p class="text-xs text-gray-500 mb-1">₱125.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_ginger">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071146.jpg" alt="Spiced Gingerbread">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Spiced Gingerbread</p>
+<p class="text-xs text-gray-500 mb-1">₱160.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_whitechoc">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071147.jpg" alt="White Choc Macadamia">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">White Choc Macadamia</p>
+<p class="text-xs text-gray-500 mb-1">₱150.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_doublechoc">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071153.jpg" alt="Double Chocolate Fudge">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Double Chocolate Fudge</p>
+<p class="text-xs text-gray-500 mb-1">₱150.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+<div class="product-card" data-product-id="cookie_shortbread">
+<img class="w-full h-24 object-cover rounded-t-xl" src="https://uploads.onecompiler.io/442nn3yzd/444zctatv/1000071148.jpg" alt="Buttery Shortbread">
+<div class="p-2 text-center">
+<p class="text-sm font-semibold text-gray-800">Buttery Shortbread</p>
+<p class="text-xs text-gray-500 mb-1">₱110.00</p>
+<button class="add-to-cart-btn w-full bg-primary-pink text-white text-xs font-bold py-1 rounded-lg hover:bg-pink-600 transition">Add to Cart</button>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center"><button data-target="selection" class="view-toggle bg-pink-100 text-primary-pink font-bold py-3 px-12 rounded-full shadow-lg hover:bg-pink-200 transition duration-300 text-xl uppercase tracking-wider"> ← Back to Categories</button></div>
+</section>
+</div> 
+
+<div id="checkout-modal" class="modal-overlay hidden opacity-0" aria-modal="true" role="dialog">
+    <div class="modal-content" role="document">
+        <div class="text-center">
+            <p class="text-5xl mb-4">🎉</p>
+            <h3 class="text-3xl font-bold brand-font text-primary-pink mb-4">THANK YOU FOR YOUR ORDER! 💖</h3>
+            
+            <div class="border-t border-b py-3 mb-4 bg-pink-50 rounded-md">
+                <p class="text-lg font-medium text-gray-700">Total charged:</p>
+                <p id="modal-total-charged" class="text-3xl font-extrabold text-dark-pink">₱0.00</p>
+            </div>
+            
+            <p class="text-sm text-gray-600 mb-6">Your delivery is estimated in **45-60 minutes**. Sweet Escape appreciates your order!</p>
+            
+            <button id="modal-close-btn" class="w-full bg-primary-pink text-white font-bold py-3 rounded-lg shadow-md hover:bg-pink-600 transition duration-300">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+</main>
+<footer class="bg-dark-pink text-white text-center p-4 mt-auto">
+<p>Sweet Escape.</p>
+</footer>
+
+
+<script>
+// --- Shopping Cart & Pricing Logic ---
+// Define all product data (ID, Name, Price in PHP ₱)
+const DELIVERY_FEE = 80.00; // Fixed delivery fee for demonstration
+const products = {
+// Brownies
+"brownie_classic_gooey": { name: "Classic Gooey Brownie", price: 190.00 },
+"brownie_rockyroad": { name: "Fudgy Rocky Road Bar", price: 230.00 },
+"brownie_classic": { name: "Classic Fudgy Brownie", price: 180.00 },
+"brownie_walnut": { name: "Walnut & Sea Salt Bar", price: 210.00 },
+"brownie_blondie": { name: "White Chocolate Blondie", price: 195.00 },
+"brownie_raspberry": { name: "Raspberry Cheesecake Bar", price: 240.00 },
+"brownie_peanut": { name: "Peanut Butter & Fudge Bar", price: 220.00 },
+"brownie_espresso": { name: "Espresso Swirl Brownie", price: 210.00 },
+"brownie_mint": { name: "Mint Chocolate Brownie", price: 225.00 },
+"brownie_caramel": { name: "Salted Caramel Bar", price: 240.00 },
+"brownie_coconut": { name: "Coconut Dream Bar", price: 195.00 },
+"brownie_smores": { name: "Gourmet S'mores Bar", price: 250.00 },
+// Pies (Full Pie Price)
+"pie_apple": { name: "Apple Crumble Pie (Full)", price: 1100.00 },
+"pie_pecan": { name: "Bourbon Pecan Pie (Full)", price: 1200.00 },
+"pie_lemon": { name: "Lemon Meringue Pie (Full)", price: 1050.00 },
+"pie_chocolate": { name: "Chocolate Silk Pie (Full)", price: 1175.00 },
+"pie_blueberry": { name: "Fresh Blueberry Pie (Full)", price: 1075.00 },
+"pie_raspberry": { name: "Tart Raspberry Pie (Full)", price: 1100.00 },
+"pie_cherry": { name: "Classic Cherry Pie (Full)", price: 1050.00 },
+"pie_keylime": { name: "Zesty Key Lime Pie (Full)", price: 1150.00 },
+"pie_pumpkin": { name: "Spiced Pumpkin Pie (Full)", price: 1000.00 },
+"pie_rhubarb": { name: "Strawberry Rhubarb Pie (Full)", price: 1225.00 },
+// Puddings
+"pudding_chocolate": { name: "Dark Chocolate Pudding", price: 250.00 },
+"pudding_brulee": { name: "Vanilla Crème brûlée", price: 325.00 },
+"pudding_tiramisu": { name: "Tiramisu Pudding", price: 275.00 },
+"pudding_caramel": { name: "Caramel Custard", price: 250.00 },
+"pudding_rice": { name: "Cinnamon Rice Pudding", price: 225.00 },
+"pudding_banana": { name: "Classic Banana Pudding", price: 275.00 },
+"pudding_butterscotch": { name: "Butterscotch Pudding", price: 240.00 },
+"pudding_tapioca": { name: "Creamy Tapioca Pudding", price: 225.00 },
+"pudding_coconut": { name: "Coconut Milk Pudding", price: 260.00 },
+"pudding_bread": { name: "Whiskey Bread Pudding", price: 300.00 },
+// Mousses
+"mousse_darkchoc": { name: "Dark Chocolate Mousse", price: 300.00 },
+"mousse_strawberry": { name: "Strawberry Swirl Mousse", price: 275.00 },
+"mousse_mango": { name: "Tropical Mango Mousse", price: 290.00 },
+"mousse_espresso": { name: "Espresso Coffee Mousse", price: 300.00 },
+"mousse_lemon": { name: "Zesty Lemon Mousse", price: 275.00 },
+"mousse_raspberry": { name: "Raspberry Mousse", price: 290.00 },
+"mousse_vanilla": { name: "Classic Vanilla Mousse", price: 260.00 },
+"mousse_pistachio": { name: "Pistachio Mousse", price: 310.00 },
+"mousse_whitechoc": { name: "White Chocolate Mousse", price: 300.00 },
+"mousse_passion": { name: "Passion Fruit Mousse", price: 290.00 },
+// Cookies
+"cookie_chocchip": { name: "Classic Chocolate Chip", price: 125.00 },
+"cookie_oatmeal": { name: "Chewy Oatmeal Raisin", price: 140.00 },
+"cookie_sugar": { name: "Frosted Sugar Cookie", price: 150.00 },
+"cookie_peanut": { name: "Peanut Butter Delight", price: 140.00 },
+"cookie_macaron": { name: "French Macaron (Single)", price: 175.00 },
+"cookie_snicker": { name: "Cinnamon Snickerdoodle", price: 125.00 },
+"cookie_ginger": { name: "Spiced Gingerbread", price: 160.00 },
+"cookie_whitechoc": { name: "White Choc Macadamia", price: 150.00 },
+"cookie_doublechoc": { name: "Double Chocolate Fudge", price: 150.00 },
+"cookie_shortbread": { name: "Buttery Shortbread", price: 110.00 },
+};
+
+// Cart items structure: { id, name, price, quantity }
+let cartItems = []; 
+let updateMessageTimeout; // Stores the timer for the "Quantity Updated!" message
+
+function formatPeso(amount) {
+    return `₱${amount.toFixed(2)}`;
+}
+
+function updateCartCounter() {
+    const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const cartCounter = document.getElementById('cart-counter');
+    cartCounter.textContent = totalQuantity;
+    
+    // Hide/show the cart counter bubble
+    if (totalQuantity > 0) {
+        cartCounter.classList.remove('hidden');
+    } else {
+        cartCounter.classList.add('hidden');
+    }
+
+    // Only re-render the cart if the user is currently viewing it
+    if (!document.getElementById('cartView').classList.contains('hidden')) {
+        renderCart();
+    }
+}
+
+/**
+ * Handles quantity change and triggers the "disappear" message.
+ */
+function changeQuantity(productId, delta) {
+    const itemIndex = cartItems.findIndex(item => item.id === productId);
+
+    if (itemIndex > -1) {
+        const newQuantity = cartItems[itemIndex].quantity + delta;
+        
+        if (newQuantity <= 0) {
+            cartItems.splice(itemIndex, 1); // Remove if quantity is zero or less
+        } else {
+            cartItems[itemIndex].quantity = newQuantity;
+        }
+    }
+
+    updateCartCounter();
+    
+    // --- New "Desapear" Logic for Quantity Change ---
+    const listElement = document.getElementById('cart-items-list');
+    let updateMessage = document.getElementById('qty-update-message');
+
+    // If the cart is empty, the message might not exist, so we create it if needed
+    if (!updateMessage) {
+         listElement.insertAdjacentHTML('afterbegin', '<p id="qty-update-message" class="text-sm text-green-600 font-semibold p-2 bg-green-50 rounded-lg hidden transition duration-300 transform scale-95 origin-left mb-2">✅ Quantity Updated!</p>');
+         updateMessage = document.getElementById('qty-update-message');
+    }
+
+    // Clear any existing timeout to restart the timer
+    clearTimeout(updateMessageTimeout);
+    
+    // Show the message
+    updateMessage.classList.remove('hidden');
+    
+    // Set a new timeout to hide the message (make it "desapear") after 1.5 seconds
+    updateMessageTimeout = setTimeout(() => {
+        if (updateMessage) {
+            updateMessage.classList.add('hidden');
+        }
+    }, 1500); 
+}
+
+function addToCart(productId) {
+    const productData = products[productId];
+    if (!productData) return;
+    const existingItem = cartItems.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cartItems.push({
+            id: productId,
+            name: productData.name,
+            price: productData.price,
+            quantity: 1
+        });
+    }
+    updateCartCounter();
+}
+
+function renderCart() {
+    const listElement = document.getElementById('cart-items-list');
+    const subtotalElement = document.getElementById('cart-subtotal');
+    const totalElement = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const emptyMessage = document.getElementById('empty-cart-message');
+
+    let subtotal = 0;
+    
+    // Clear only the content that changes (not the message container, if it exists)
+    // We recreate the content dynamically inside a temporary container
+    let contentHtml = '';
+
+    if (cartItems.length === 0) {
+        emptyMessage.classList.remove('hidden');
+    } else {
+        emptyMessage.classList.add('hidden');
+    }
+
+    cartItems.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        contentHtml += `
+            <div class="flex items-center justify-between border-b pb-3 pt-3 last:border-b-0" id="cart-item-${item.id}">
+                <div class="flex-grow">
+                    <p class="text-sm font-semibold text-gray-800">${item.name}</p>
+                    <p class="text-xs text-primary-pink">${formatPeso(item.price)} each</p>
+                </div>
+                <div class="flex items-center space-x-2 mx-4">
+                    <button class="qty-control text-gray-500 hover:text-dark-pink p-1 rounded-full bg-gray-100 w-6 h-6 flex items-center justify-center" 
+                            data-id="${item.id}" data-delta="-1">−
+                    </button>
+                    <span class="text-sm font-medium w-4 text-center">${item.quantity}</span>
+                    <button class="qty-control text-gray-500 hover:text-dark-pink p-1 rounded-full bg-gray-100 w-6 h-6 flex items-center justify-center" 
+                            data-id="${item.id}" data-delta="1">&plus;
+                    </button>
+                </div>
+                <span class="text-sm font-bold text-gray-900">${formatPeso(itemTotal)}</span>
+            </div>
+        `;
+    });
+    
+    // Preserve the empty message element and the update message element
+    const existingEmptyMessage = document.getElementById('empty-cart-message');
+    const existingUpdateMessage = document.getElementById('qty-update-message');
+
+    // Clear and rebuild the list content
+    listElement.innerHTML = '';
+    
+    if (existingUpdateMessage) {
+        listElement.appendChild(existingUpdateMessage);
+    } else {
+         // Insert a temporary message container if it wasn't there
+        listElement.insertAdjacentHTML('afterbegin', '<p id="qty-update-message" class="text-sm text-green-600 font-semibold p-2 bg-green-50 rounded-lg hidden transition duration-300 transform scale-95 origin-left mb-2">✅ Quantity Updated!</p>');
+    }
+
+    if (existingEmptyMessage) {
+        listElement.appendChild(existingEmptyMessage);
+    }
+
+    listElement.insertAdjacentHTML('beforeend', contentHtml);
+
+
+    // Update Summary
+    const totalAmountDue = subtotal > 0 ? subtotal + DELIVERY_FEE : DELIVERY_FEE; // Total includes delivery fee even if subtotal is 0
+    subtotalElement.textContent = formatPeso(subtotal);
+    document.getElementById('delivery-fee').textContent = formatPeso(DELIVERY_FEE);
+    totalElement.textContent = formatPeso(totalAmountDue);
+    
+    // Only update the checkout button text and enable it if there are items
+    if (subtotal > 0) {
+        checkoutBtn.textContent = `Proceed to Checkout (${formatPeso(totalAmountDue)})`;
+        checkoutBtn.disabled = false;
+        // Set the final checkout function on the button
+        checkoutBtn.onclick = () => proceedToCheckout(totalAmountDue);
+    } else {
+         checkoutBtn.textContent = `Proceed to Checkout (${formatPeso(DELIVERY_FEE)})`;
+         checkoutBtn.disabled = true;
+         checkoutBtn.onclick = null;
+    }
+
+
+    // Re-attach event listeners to the new quantity controls
+    document.querySelectorAll('.qty-control').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.currentTarget.dataset.id;
+            const delta = parseInt(event.currentTarget.dataset.delta);
+            changeQuantity(id, delta);
+        });
+    });
+}
+
+
+/**
+ * 🟢 MODIFIED: Handles the final step and shows the custom modal.
+ * @param {number} finalAmount - The total amount due including delivery fee.
+ */
+function proceedToCheckout(finalAmount) {
+    // 1. Update the modal content
+    document.getElementById('modal-total-charged').textContent = formatPeso(finalAmount);
+    
+    // 2. Show the custom modal with smooth transition
+    const modal = document.getElementById('checkout-modal');
+    modal.classList.remove('hidden');
+    // Force reflow/repaint to ensure CSS transition works
+    void modal.offsetWidth; 
+    modal.classList.add('opacity-100');
+    
+    // 3. Clear the cart data and update view when the modal is closed
+    const closeModal = () => {
+        cartItems = []; 
+        updateCartCounter(); 
+        showView('homeView'); 
+        
+        // Hide modal
+        modal.classList.remove('opacity-100');
+        setTimeout(() => {
+             modal.classList.add('hidden');
+        }, 300); // Match transition duration
+        
+        // Remove listener to prevent memory leak
+        document.getElementById('modal-close-btn').removeEventListener('click', closeModal);
+    };
+    
+    // 4. Attach listener to the close button
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+}
+
+
+// --- View Toggling Logic (modified to call renderCart on Cart view) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const views = document.querySelectorAll('section[id$="View"]'); 
+    const detailViewsContainer = document.getElementById('detailViewsContainer');
+    const homeLink = document.getElementById('homeLink');
+
+    function showView(targetId) {
+        views.forEach(view => {
+            view.classList.add('hidden');
+        });
+        detailViewsContainer.classList.add('hidden'); 
+
+        // Logic for handling detail views
+        if (['browniesView', 'piesView', 'puddingView', 'mooseView', 'cookiesView'].includes(targetId)) {
+            detailViewsContainer.classList.remove('hidden');
+            const targetDetailView = document.getElementById(targetId);
+            if (targetDetailView) {
+                targetDetailView.classList.remove('hidden');
+            }
+        } else {
+            const targetMainView = document.getElementById(targetId);
+            if (targetMainView) {
+                targetMainView.classList.remove('hidden');
+            }
+        }
+
+        // Render the cart when cartView is shown
+        if (targetId === 'cartView') {
+            renderCart();
+        }
+    }
+
+    // Expose showView globally so checkout can use it
+    window.showView = showView; 
+
+    // Event listeners for general view toggles
+    document.querySelectorAll('.view-toggle').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const targetId = event.currentTarget.dataset.target;
+            showView(targetId + 'View');
+        });
+    });
+
+    // Event listeners for category buttons
+    document.querySelectorAll('.category-toggle').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const category = event.currentTarget.dataset.category;
+            showView(category + 'View');
+        });
+    });
+
+    // Event listeners for "Add to Cart" buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const card = event.target.closest('.product-card');
+            const productId = card.dataset.productId;
+            addToCart(productId);
+        });
+    });
+
+    homeLink.addEventListener('click', () => {
+        showView('homeView');
+    });
+
+    // Initial view on page load
+    showView('homeView');
+    updateCartCounter(); // Initialize the counter and summary
+});
+</script>
+</body>
+</html>
